@@ -41,6 +41,11 @@ class ExampleSensor(Entity):
     @property
     def state(self):
         return self._state
+
+    @property
+    def icon(self):
+        return self._icon
+
     @property
     def device_state_attributes(self):
         return {

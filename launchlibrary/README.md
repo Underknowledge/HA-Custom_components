@@ -10,3 +10,5 @@ Example configuration.yaml:
 sensor:
   - platform: launchlibrary
 ```
+ #### Sample overview
+![Samble overview](/overview.png)
