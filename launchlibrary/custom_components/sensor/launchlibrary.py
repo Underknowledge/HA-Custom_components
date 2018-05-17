@@ -9,7 +9,10 @@ from datetime import timedelta
 from homeassistant.helpers.entity import Entity
 
 ATTR_STREAM = 'stream'
+ATTR_LAUNCH_ISO = 'iso_date'
 ATTR_LAUNCH_NAME = 'launch name'
+ATTR_AGENCY_NAME = 'agengy'
+ATTR_AGENCY_COUNTRY = 'agengy_country_code'
 
 SCAN_INTERVAL = timedelta(seconds=60)
 
@@ -31,7 +34,10 @@ class ExampleSensor(Entity):
         fetchurl = baseurl + 'launch/next/1'
         launch = requests.get(fetchurl).json()['launches'][0]
         self._state = launch["windowstart"]
+        self._launciso = launch["isostart"]
         self._launchname = launch["name"]
+        self._agencyname = launch["rocket"]["agencies"][0]["name"]
+        self._agencycountry = launch["rocket"]["agencies"][0]["countryCode"]
         self._launchstream = launch["vidURLs"][0]
 
     @property
@@ -50,5 +56,8 @@ class ExampleSensor(Entity):
     def device_state_attributes(self):
         return {
             ATTR_LAUNCH_NAME: self._launchname,
+            ATTR_LAUNCH_ISO: self._launciso,
+            ATTR_AGENCY_NAME: self._agencyname,
+            ATTR_AGENCY_COUNTRY: self._agencycountry,
             ATTR_STREAM: self._launchstream
         }
