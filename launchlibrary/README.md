@@ -11,4 +11,4 @@ sensor:
   - platform: launchlibrary
 ```
  #### Sample overview
-![Samble overview](/overview.png)
+![Sample overview](overview.png)
