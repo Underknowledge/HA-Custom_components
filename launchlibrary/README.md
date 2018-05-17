@@ -12,3 +12,8 @@ sensor:
 ```
  #### Sample overview
 ![Sample overview](overview.png)
+
+
+  
+
+This component is using the launchlibrary.net API to get the information.

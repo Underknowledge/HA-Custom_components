@@ -9,32 +9,33 @@ from datetime import timedelta
 from homeassistant.helpers.entity import Entity
 
 ATTR_STREAM = 'stream'
-ATTR_LAUNCH_ISO = 'iso_date'
-ATTR_LAUNCH_NAME = 'launch name'
+ATTR_LAUNCH_NAME = 'launch_name'
+ATTR_LAUNCH_TIMESTAMP = 'timestamp'
 ATTR_AGENCY_NAME = 'agengy'
 ATTR_AGENCY_COUNTRY = 'agengy_country_code'
 
 SCAN_INTERVAL = timedelta(seconds=60)
 
+ICON = 'mdi:rocket'
+
 def setup_platform(hass, config, add_devices, discovery_info=None):
-    dev = []
-    dev.append(ExampleSensor('mdi:rocket'))
-    add_devices(dev, True)
+    add_devices([LaunchSensor()])
 
-class ExampleSensor(Entity):
-    """Representation of a Sensor."""
-
-    def __init__(self, icon):
-        """Initialize the sensor."""
+class LaunchSensor(Entity):
+    def __init__(self):
         self._state = None
-        self._icon = icon
+        self._launchtimestamp = None
+        self._launchname = None
+        self._agencyname = None
+        self._agencycountry = None
+        self._launchstream = None
 
     def update(self):
         baseurl = "https://launchlibrary.net/1.4/"
         fetchurl = baseurl + 'launch/next/1'
         launch = requests.get(fetchurl).json()['launches'][0]
         self._state = launch["windowstart"]
-        self._launciso = launch["isostart"]
+        self._launchtimestamp = launch["wsstamp"]
         self._launchname = launch["name"]
         self._agencyname = launch["rocket"]["agencies"][0]["name"]
         self._agencycountry = launch["rocket"]["agencies"][0]["countryCode"]
@@ -50,13 +51,13 @@ class ExampleSensor(Entity):
 
     @property
     def icon(self):
-        return self._icon
+        return ICON
 
     @property
     def device_state_attributes(self):
         return {
             ATTR_LAUNCH_NAME: self._launchname,
-            ATTR_LAUNCH_ISO: self._launciso,
+            ATTR_LAUNCH_TIMESTAMP: self._launchtimestamp,
             ATTR_AGENCY_NAME: self._agencyname,
             ATTR_AGENCY_COUNTRY: self._agencycountry,
             ATTR_STREAM: self._launchstream
