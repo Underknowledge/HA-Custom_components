@@ -16,4 +16,4 @@ sensor:
 
   
 
-This component is using the launchlibrary.net API to get the information.
+This component is using the [launchlibrary.net](http://launchlibrary.net/) API to get the information.
