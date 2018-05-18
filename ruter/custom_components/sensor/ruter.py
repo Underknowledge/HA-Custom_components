@@ -4,6 +4,7 @@ For more details about this component, please refer to the documentation at
 https://github.com/HalfDecent/HA-Custom_components/ruter
 """
 import requests
+import dateutil.parser
 import voluptuous as vol
 from datetime import timedelta
 from homeassistant.helpers.entity import Entity
@@ -12,11 +13,12 @@ from homeassistant.components.switch import (PLATFORM_SCHEMA)
 
 CONF_STOPID = 'stopid'
 
-ATTR_TIME = 'DepartureTime'
+ATTR_DESTINATION = 'destination'
+ATTR_LINE = 'line'
 ATTR_COMPONENT = 'component'
 ATTR_STOPID = 'stopid'
 
-SCAN_INTERVAL = timedelta(seconds=5)
+SCAN_INTERVAL = timedelta(seconds=20)
 
 ICON = 'mdi:bus'
 
@@ -31,7 +33,8 @@ def setup_platform(hass, config, add_devices, discovery_info=None):
 class RuterSensor(Entity):
     def __init__(self, stopid):
         self._state = None
-        self._time = None
+        self._line = None
+        self._destination = None
         self._stopid = stopid
         self._component = 'ruter'
 
@@ -39,11 +42,11 @@ class RuterSensor(Entity):
         baseurl = "http://reisapi.ruter.no/StopVisit/GetDepartures/"
         fetchurl = baseurl + self._stopid
         departure = requests.get(fetchurl).json()[0]
-        line = departure['MonitoredVehicleJourney']['LineRef']
-        destination = departure['MonitoredVehicleJourney']['DestinationName']
+        self._line = departure['MonitoredVehicleJourney']['LineRef']
+        self._destination = departure['MonitoredVehicleJourney']['DestinationName']
         time = departure['MonitoredVehicleJourney']['MonitoredCall']['ExpectedDepartureTime']
-        self._state = line + ' ' + destination
-        self._time = time
+        deptime = dateutil.parser.parse(time)
+        self._state = deptime.strftime("%H:%M")
 
 
     @property
@@ -61,7 +64,8 @@ class RuterSensor(Entity):
     @property
     def device_state_attributes(self):
         return {
-            ATTR_TIME: self._time,
+            ATTR_LINE: self._line,
+            ATTR_DESTINATION: self._destination,
             ATTR_COMPONENT: self._component,
             ATTR_STOPID: self._stopid
         }
