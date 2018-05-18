@@ -41,7 +41,12 @@ class LaunchSensor(Entity):
         self._launchname = launch["name"]
         self._agencyname = launch["rocket"]["agencies"][0]["name"]
         self._agencycountry = launch["rocket"]["agencies"][0]["countryCode"]
-        self._launchstream = launch["vidURLs"][0]
+        try:
+            launch["vidURLs"][0]
+        except Exception:
+            self._launchstream = None
+        else:
+            self._launchstream = launch["vidURLs"][0]
 
     @property
     def name(self):
