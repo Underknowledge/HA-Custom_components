@@ -3,6 +3,7 @@ A component which allows you to get information about next departure from spesif
 For more details about this component, please refer to the documentation at
 https://github.com/HalfDecent/HA-Custom_components/ruter
 """
+import logging
 import requests
 import dateutil.parser
 import voluptuous as vol
@@ -18,13 +19,15 @@ ATTR_LINE = 'line'
 ATTR_COMPONENT = 'component'
 ATTR_STOPID = 'stopid'
 
-SCAN_INTERVAL = timedelta(seconds=20)
+SCAN_INTERVAL = timedelta(seconds=10)
 
 ICON = 'mdi:bus'
 
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
     vol.Required(CONF_STOPID): cv.string,
 })
+
+_LOGGER = logging.getLogger(__name__)
 
 def setup_platform(hass, config, add_devices, discovery_info=None):
     stopid = config.get(CONF_STOPID)
@@ -41,12 +44,16 @@ class RuterSensor(Entity):
     def update(self):
         baseurl = "http://reisapi.ruter.no/StopVisit/GetDepartures/"
         fetchurl = baseurl + self._stopid
-        departure = requests.get(fetchurl).json()[0]
-        self._line = departure['MonitoredVehicleJourney']['LineRef']
-        self._destination = departure['MonitoredVehicleJourney']['DestinationName']
-        time = departure['MonitoredVehicleJourney']['MonitoredCall']['ExpectedDepartureTime']
-        deptime = dateutil.parser.parse(time)
-        self._state = deptime.strftime("%H:%M")
+        try:
+            departure = requests.get(fetchurl, timeout=3).json()[0]
+        except:
+            _LOGGER.debug("Error fetching new state")
+        else:
+            self._line = departure['MonitoredVehicleJourney']['LineRef']
+            self._destination = departure['MonitoredVehicleJourney']['DestinationName']
+            time = departure['MonitoredVehicleJourney']['MonitoredCall']['ExpectedDepartureTime']
+            deptime = dateutil.parser.parse(time)
+            self._state = deptime.strftime("%H:%M")
 
 
     @property
