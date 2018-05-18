@@ -11,8 +11,8 @@ sensor:
   - platform: launchlibrary
 ```
  #### Sample overview
-![Sample overview](overview.png)
-
+![Sample overview](overview.png)  
+[Demo](https://ha-test-launchlibrary.halfdecent.io)
 
   
 

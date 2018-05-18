@@ -13,6 +13,7 @@ ATTR_LAUNCH_NAME = 'launch_name'
 ATTR_LAUNCH_TIMESTAMP = 'timestamp'
 ATTR_AGENCY_NAME = 'agengy'
 ATTR_AGENCY_COUNTRY = 'agengy_country_code'
+ATTR_COMPONENT = 'component'
 
 SCAN_INTERVAL = timedelta(seconds=60)
 
@@ -29,6 +30,7 @@ class LaunchSensor(Entity):
         self._agencyname = None
         self._agencycountry = None
         self._launchstream = None
+        self._component = 'launchlibrary'
 
     def update(self):
         baseurl = "https://launchlibrary.net/1.4/"
@@ -60,5 +62,6 @@ class LaunchSensor(Entity):
             ATTR_LAUNCH_TIMESTAMP: self._launchtimestamp,
             ATTR_AGENCY_NAME: self._agencyname,
             ATTR_AGENCY_COUNTRY: self._agencycountry,
-            ATTR_STREAM: self._launchstream
+            ATTR_STREAM: self._launchstream,
+            ATTR_COMPONENT: self._component
         }
