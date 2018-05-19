@@ -16,12 +16,15 @@ CONF_STOPID = 'stopid'
 
 ATTR_DESTINATION = 'destination'
 ATTR_LINE = 'line'
-ATTR_COMPONENT = 'component'
 ATTR_STOPID = 'stopid'
+ATTR_COMPONENT = 'component'
+ATTR_COMPONENT_VERSION = 'component_version'
 
 SCAN_INTERVAL = timedelta(seconds=10)
 
 ICON = 'mdi:bus'
+COMPONENT_NAME = 'ruter'
+COMPONENT_VERSION = '1.0.0'
 
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
     vol.Required(CONF_STOPID): cv.string,
@@ -39,7 +42,8 @@ class RuterSensor(Entity):
         self._line = None
         self._destination = None
         self._stopid = stopid
-        self._component = 'ruter'
+        self._component = COMPONENT_NAME
+        self._componentversion = COMPONENT_VERSION
 
     def update(self):
         baseurl = "http://reisapi.ruter.no/StopVisit/GetDepartures/"
@@ -73,6 +77,7 @@ class RuterSensor(Entity):
         return {
             ATTR_LINE: self._line,
             ATTR_DESTINATION: self._destination,
+            ATTR_STOPID: self._stopid,
             ATTR_COMPONENT: self._component,
-            ATTR_STOPID: self._stopid
+            ATTR_COMPONENT_VERSION: self._componentversion
         }

@@ -26,10 +26,13 @@ ATTR_MEMORY = 'memory'
 ATTR_RX_TOTAL = 'network_rx_total'
 ATTR_TX_TOTAL = 'network_tx_total'
 ATTR_COMPONENT = 'component'
+ATTR_COMPONENT_VERSION = 'component_version'
 
 SCAN_INTERVAL = timedelta(seconds=30)
 
 ICON = 'mdi:docker'
+COMPONENT_NAME = 'hadockermon'
+COMPONENT_VERSION = '1.0.0'
 TIMEOUT = 5
 
 _LOGGER = logging.getLogger(__name__)
@@ -65,11 +68,12 @@ class ContainerSwitch(SwitchDevice):
         self._stats = stats
         self._status = None
         self._image = None
-        self._component = 'hadockermon'
         self._memory_usage = None
         self._network_rx_total = None
         self._network_tx_total = None
         self._baseurl = baseurl
+        self._component = COMPONENT_NAME
+        self._componentversion = COMPONENT_VERSION
 
     def update(self):
         fetchurl = self._baseurl + '/container/' + self._name
@@ -130,16 +134,18 @@ class ContainerSwitch(SwitchDevice):
             return {
                 ATTR_STATUS: self._status,
                 ATTR_IMAGE: self._image,
-                ATTR_COMPONENT: self._component,
                 ATTR_MEMORY: self._memory_usage,
                 ATTR_RX_TOTAL: self._network_rx_total,
                 ATTR_TX_TOTAL: self._network_tx_total,
+                ATTR_COMPONENT: self._component,
+                ATTR_COMPONENT_VERSION: self._componentversion
             }
         else:
             return {
                 ATTR_STATUS: self._status,
                 ATTR_IMAGE: self._image,
                 ATTR_COMPONENT: self._component,
+                ATTR_COMPONENT_VERSION: self._componentversion
             }
             
     @property
