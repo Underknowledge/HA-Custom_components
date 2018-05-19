@@ -1,5 +1,7 @@
 # custom_component to get info about next launches
 
+![Version](https://img.shields.io/badge/version-1.0.0-green.svg?style=for-the-badge)
+
 To get started:   
 Put `/custom_components/sensor/launchlibrary.py` here:  
 `<config directory>/custom_components/sensor/launchlibrary.py`  

@@ -1,5 +1,7 @@
 # custom_component to get info about next departures
-A component which allows you to get information about next departure from spesified stop.  
+![Version](https://img.shields.io/badge/version-1.0.0-green.svg?style=for-the-badge)
+
+A component which allows you to get information about next departure from spesified stop. 
 
 To get started:   
 Put `/custom_components/sensor/ruter.py` here:  
