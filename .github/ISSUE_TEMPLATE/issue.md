@@ -1,8 +1,11 @@
 ---
-name: Issue - launchlibrary
+name: Issue
 about: Issue template
 
 ---
+
+**Component:**
+
 
 **Describe the bug**
 
