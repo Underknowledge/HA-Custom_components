@@ -32,7 +32,7 @@ SCAN_INTERVAL = timedelta(seconds=30)
 
 ICON = 'mdi:docker'
 COMPONENT_NAME = 'hadockermon'
-COMPONENT_VERSION = '1.0.0'
+COMPONENT_VERSION = '1.0.1'
 TIMEOUT = 5
 
 _LOGGER = logging.getLogger(__name__)
@@ -66,6 +66,7 @@ class ContainerSwitch(SwitchDevice):
         self._name = name
         self._state = state
         self._stats = stats
+        self._network_stats = None
         self._status = None
         self._image = None
         self._memory_usage = None
@@ -107,6 +108,7 @@ class ContainerSwitch(SwitchDevice):
                             self._network_rx_total = None
                             self._network_tx_total = None
                         else:
+                            self._network_stats = 'aviable'
                             container_network_rx_total = containerstats['networks']['eth0']['rx_bytes']/1024/1024
                             container_network_tx_total = containerstats['networks']['eth0']['tx_bytes']/1024/1024
                             self._network_rx_total = str(round(container_network_rx_total, 2)) + ' MB'
@@ -130,7 +132,7 @@ class ContainerSwitch(SwitchDevice):
 
     @property
     def device_state_attributes(self):
-        if self._stats == 'True':
+        if self._network_stats == 'aviable':
             return {
                 ATTR_STATUS: self._status,
                 ATTR_IMAGE: self._image,
@@ -140,7 +142,15 @@ class ContainerSwitch(SwitchDevice):
                 ATTR_COMPONENT: self._component,
                 ATTR_COMPONENT_VERSION: self._componentversion
             }
-        else:
+        elif self._stats == 'True':
+            return {
+                ATTR_STATUS: self._status,
+                ATTR_IMAGE: self._image,
+                ATTR_MEMORY: self._memory_usage,
+                ATTR_COMPONENT: self._component,
+                ATTR_COMPONENT_VERSION: self._componentversion
+            }
+        else: 
             return {
                 ATTR_STATUS: self._status,
                 ATTR_IMAGE: self._image,
