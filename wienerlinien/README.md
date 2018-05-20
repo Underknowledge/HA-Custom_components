@@ -1,5 +1,5 @@
 # custom_component to get info about next departures
-![Version](https://img.shields.io/badge/version-1.0.2-green.svg?style=for-the-badge)
+![Version](https://img.shields.io/badge/version-1.1.0-green.svg?style=for-the-badge)
 
 A component which allows you to get information about next departure from spesified stop. 
 
@@ -12,8 +12,10 @@ Example configuration.yaml:
 ```yaml
 sensor:
   - platform: wienerlinien
-    stopid: 4429
     apikey: iuvds8793889dsd
+    stops:
+      - 4429
+      - 3230
 ```
  #### Sample overview
 ![Sample overview](overview.png)  
