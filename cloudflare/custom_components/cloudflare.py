@@ -103,7 +103,7 @@ def _update_cloudflare(session, email, key, zone, records):
         data = json.dumps({'id': zoneID, 'type': RecordType, 'name': RecordFullname, 'content': IP, 'proxied': proxied})
         fetchurl = BASE_URL + '/' + zoneID + '/dns_records/' + RecordID 
         if RecordContent == IP:
-            _LOGGER.info('The IP for %s has not changed, skipping update', RecordFullname)
+            _LOGGER.debug('The IP for %s has not changed, skipping update', RecordFullname)
         else:
             if RecordType == 'A':
                 result = requests.put(fetchurl, headers=headers, data=data).json()
