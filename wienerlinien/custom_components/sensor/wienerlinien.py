@@ -17,6 +17,7 @@ CONF_APIKEY = 'apikey'
 
 ATTR_STOPID = 'stopid'
 ATTR_NEXT_DEPARTURE = 'next_departure'
+ATTR_FIRST_DEPARTURE = 'first_departure'
 ATTR_COMPONENT = 'component'
 ATTR_COMPONENT_VERSION = 'component_version'
 
@@ -24,7 +25,7 @@ SCAN_INTERVAL = timedelta(seconds=30)
 
 ICON = 'mdi:bus'
 COMPONENT_NAME = 'wienerlinien'
-COMPONENT_VERSION = '1.0.1'
+COMPONENT_VERSION = '1.0.2'
 
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
     vol.Required(CONF_STOPID): cv.string,
@@ -42,8 +43,9 @@ def setup_platform(hass, config, add_devices, discovery_info=None):
 
 class WienerlinienSensor(Entity):
     def __init__(self, stopid, apikey):
-        self._state = 'N/A'
+        self._state = None
         self._nextdeparture = 'N/A'
+        self._firstdeparture = 'N/A'
         self._stopid = stopid
         self._apikey = apikey
         self._component = COMPONENT_NAME
@@ -59,14 +61,18 @@ class WienerlinienSensor(Entity):
             try:
                 departure['monitors'][0]['lines'][0]['departures']['departure'][0]['departureTime']['countdown']
             except:
-                countdown = 'N/A'
+                firstDeparture = 'N/A'
                 nextDeparture = 'N/A'
             else:
-                countdown = departure['monitors'][0]['lines'][0]['departures']['departure'][0]['departureTime']['countdown']
+                firstDeparture = departure['monitors'][0]['lines'][0]['departures']['departure'][0]['departureTime']['countdown']
                 nextDeparture = departure['monitors'][0]['lines'][0]['departures']['departure'][1]['departureTime']['countdown']
-            self._state = countdown
+            DepartureTowards = departure['monitors'][0]['lines'][0]['towards']
+            if firstDeparture == 'N/A':
+                self._state = DepartureTowards
+            else: 
+                self._state = DepartureTowards + ' in ' + str(firstDeparture) + 'min(s)'
+            self._firstdeparture = firstDeparture
             self._nextdeparture = nextDeparture
-
 
     @property
     def name(self):
@@ -81,12 +87,9 @@ class WienerlinienSensor(Entity):
         return ICON
 
     @property
-    def unit_of_measurement(self):
-        return 'min(s)'
-
-    @property
     def device_state_attributes(self):
         return {
+            ATTR_FIRST_DEPARTURE: self._firstdeparture,
             ATTR_NEXT_DEPARTURE: self._nextdeparture,
             ATTR_STOPID: self._stopid,
             ATTR_COMPONENT: self._component,
