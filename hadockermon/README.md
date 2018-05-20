@@ -1,5 +1,5 @@
 # Custom_component for [ha-dockermon](https://github.com/philhawthorne/ha-dockermon)
-![Version](https://img.shields.io/badge/version-1.0.1-green.svg?style=for-the-badge)
+![Version](https://img.shields.io/badge/version-1.0.2-green.svg?style=for-the-badge)
 
 A custom component which allows you to interact with [ha-dockermon.](https://github.com/philhawthorne/ha-dockermon)
 

@@ -32,7 +32,7 @@ SCAN_INTERVAL = timedelta(seconds=30)
 
 ICON = 'mdi:docker'
 COMPONENT_NAME = 'hadockermon'
-COMPONENT_VERSION = '1.0.1'
+COMPONENT_VERSION = '1.0.2'
 TIMEOUT = 5
 
 _LOGGER = logging.getLogger(__name__)
@@ -56,7 +56,7 @@ def setup_platform(hass, config, add_devices_callback, discovery_info=None):
         containername = containers[num]['Names'][0]
         container = str(containername[1:])
         num = num + 1
-        if containername not in exclude:
+        if container not in exclude:
             dev.append(ContainerSwitch(container, 
                 False, config.get(CONF_STATS), baseurl))
     add_devices_callback(dev, True)
