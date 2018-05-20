@@ -27,7 +27,7 @@ INTERVAL = timedelta(minutes=60)
 SERVICE_UPDATE = 'update_records'
 
 COMPONENT_NAME = 'cloudflare'
-COMPONENT_VERSION = '1.0.0'
+COMPONENT_VERSION = '1.0.1'
 BASE_URL = 'https://api.cloudflare.com/client/v4/zones'
 EXT_IP_URL = 'https://api.ipify.org'
 
@@ -95,16 +95,20 @@ def _update_cloudflare(session, email, key, zone, records):
         RecordID = recordInfo['id']
         RecordType = recordInfo['type']
         RecordProxy = str(recordInfo['proxied'])
+        RecordContent = recordInfo['content']
         if RecordProxy == 'True':
             proxied = True
         else:
             proxied = False
         data = json.dumps({'id': zoneID, 'type': RecordType, 'name': RecordFullname, 'content': IP, 'proxied': proxied})
-        fetchurl = BASE_URL + '/' + zoneID + '/dns_records/' + RecordID
-        if RecordType == 'A':
-            result = requests.put(fetchurl, headers=headers, data=data).json()
-            _LOGGER.debug('Update successfully: %s', result['success'])
+        fetchurl = BASE_URL + '/' + zoneID + '/dns_records/' + RecordID 
+        if RecordContent == IP:
+            _LOGGER.info('The IP for %s has not changed, skipping update', RecordFullname)
         else:
-            _LOGGER.debug('Record type for %s is not A, skipping update', RecordFullname)
-        _LOGGER.info('Update for zone %s is complete.', zone)
+            if RecordType == 'A':
+                result = requests.put(fetchurl, headers=headers, data=data).json()
+                _LOGGER.debug('Update successfully: %s', result['success'])
+            else:
+                _LOGGER.debug('Record type for %s is not A, skipping update', RecordFullname)
+    _LOGGER.info('Update for zone %s is complete.', zone)
     return str(True)
