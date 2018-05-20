@@ -18,7 +18,6 @@ sensor:
       - 3230
 ```
  #### Sample overview
-![Sample overview](overview.png)  
-[Demo](https://ha-test-wienerlinien.halfdecent.io)
+![Sample overview](overview.png)
 
 This component is using the [Wienerlinien API](http://www.wienerlinien.at) API to get the information.
