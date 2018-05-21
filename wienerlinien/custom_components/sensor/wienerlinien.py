@@ -81,7 +81,7 @@ class WienerlinienSensor(Entity):
             if firstDeparture == 'N/A':
                 self._state = DepartureTowards
             else: 
-                self._state = DepartureTowards + ' in ' + str(firstDeparture) + 'min(s) ' + DepartureTowards + ' in ' + str(nextDeparture) + 'min(s)'
+                self._state = ' ' + str(firstDeparture) + ' / ' + ' ' + str(nextDeparture) + ' min Richtung '+ DepartureTowards 
             self._firstdeparture = firstDeparture
             self._nextdeparture = nextDeparture
 
